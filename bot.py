@@ -4,7 +4,12 @@ import os
 TOKEN = os.getenv('TOKEN')
 
 import discord
-import lib.codeforces.codeforces as codeforces
+from discord.ext import tasks
+from lib.codeforces.codeforces import CodeForces
+from lib.utils.message_painter import painter
+
+from threading import Thread
+import asyncio
 
 class Reminder(discord.Client):
 
@@ -20,7 +25,7 @@ class Reminder(discord.Client):
         print('Message:', msg)
         if msg[0] == 'քոդֆորսիս':
             channel = message.channel
-            await channel.send('\n'.join(['https://codeforces.com/contests'] + [str(contest) for contest in codeforces.CodeForces.get_upcoming()]))
+            await channel.send('\n'.join(['https://codeforces.com/contests'] + [painter.send(str(contest)) for contest in CodeForces.get_upcoming()]))
 
 reminder = Reminder()
 

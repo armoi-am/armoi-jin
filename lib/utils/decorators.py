@@ -3,7 +3,7 @@ import time
 def duration_str(func):
     def modifier(*args, **kwargs):
         durationSec = func(*args, **kwargs)
-        return '%02d:%02d:%02d' % (durationSec // 3600, (durationSec % 3600) // 60, durationSec % 60) 
+        return '%02d:%02d' % (durationSec // 3600, (durationSec % 3600) // 60) 
     return modifier
 
 def date_time(func):
@@ -14,18 +14,18 @@ def date_time(func):
 
 def hy_month(func):
     dict = {
-        'Jan': 'Հունվ․',
-        'Feb': 'Փետ․',
+        'Jan': 'Հունվ',
+        'Feb': 'Փետ',
         'Mar': 'Մարտ',
-        'Apr': 'Ապր․',
-        'May': 'Մայ․',
-        'June': 'Հուն․',
-        'July': 'Հուլ․',
-        'Aug': 'Օգ․',
-        'Sept': 'Սեպտ․',
-        'Oct': 'Հոկտ․',
-        'Nov': 'Նոյ․',
-        'Dec': 'Դեկտ․'
+        'Apr': 'Ապ',
+        'May': 'Մայ',
+        'June': 'Հուն',
+        'July': 'Հուլ',
+        'Aug': 'Օգ',
+        'Sept': 'Սեպտ',
+        'Oct': 'Հոկտ',
+        'Nov': 'Նոյ',
+        'Dec': 'Դեկտ'
     }
 
     def modifier(*args, **kwargs):

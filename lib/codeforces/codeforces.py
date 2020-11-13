@@ -66,8 +66,8 @@ class CodeForces():
         upcoming = sorted([
             Contest(**contest)
             for contest in json.loads(response.content)['result']
-            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0
-        ], key=lambda x: x.start_time_seconds)
+            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -24 * 7 * 60 * 60
+        ], key=lambda x: -x.start_time_seconds)
 
         return upcoming
 

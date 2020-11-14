@@ -1,9 +1,10 @@
+import discord
 import requests
 import time
-from requests.exceptions import HTTPError
 import json
 
 from lib.utils.decorators import duration_str, date_time, hy_month
+from lib.utils.message_painter import painter
 
 class Contest():
     def __init__(self, id, name, type, phase, frozen, durationSeconds, startTimeSeconds, relativeTimeSeconds):
@@ -43,15 +44,29 @@ class Contest():
     @property
     def name(self):
         return self.__name
-    
-    def __str__(self):
-        return f'|Մնաց՝ {self.before_start} | Ստարտը՝ {self.start_date_time} | Անունը՝ {self.name} | Տևող․՝ {self.duration}|'
+
+    @property
+    def type(self):
+        return self.__type
 
     def __repr__(self):
         return f'Contest(id={self.__id}, name={self.__name}, type={self.__type}, phase={self.__phase}, frozen={self.__frozen}, duration_seconds={self.__duration_seconds}, start_time_seconds={self.__start_time_seconds}, relative_time_seconds={self.__relative_time_seconds})'
 
     def is_close(self):
-        return -15 * 60 <= self.__relative_time_seconds < -10 * 60
+        return -30 * 60 <= self.__relative_time_seconds < -25 * 60
+    
+    @property
+    def embed(self):
+        # TODO: make gradient
+        embed = discord.Embed(
+            title=self.name,
+            url=f'https://codeforces.com/contests/{self.id}',
+            color=discord.Color.red() if self.is_close() else 0x576fa6
+        )
+        embed.add_field(name='Մինչև մեկնարկը', value=self.before_start)
+        embed.add_field(name='Մեկնարկը', value=self.start_date_time)
+        embed.add_field(name='Տևողությունը', value=self.duration)
+        return embed
 
 class CodeForces():
 
@@ -67,10 +82,20 @@ class CodeForces():
             Contest(**contest)
             for contest in json.loads(response.content)['result']
             if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -24 * 7 * 60 * 60
-        ], key=lambda x: -x.start_time_seconds)
+        ], key=lambda x: x.start_time_seconds)
 
         return upcoming
-
+    
+    @staticmethod
+    def message_from_contest_list(contests):
+        embed = discord.Embed(
+            title='CodeForces Contests',
+            url='https://codeforces.com/contests',
+            color=0x576fa6,
+        )
+        for contest in contests:
+            embed.add_field(name=contest.name, value=str(contest))
+        return embed
 
 if __name__ == '__main__':
     print(CodeForces.get_upcoming())

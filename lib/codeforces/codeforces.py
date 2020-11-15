@@ -4,7 +4,7 @@ import time
 import json
 
 from lib.utils.decorators import duration_str, date_time, hy_month
-from lib.utils.message_painter import painter
+from lib.utils.color_generators import rg_linear_gradient
 
 class Contest():
     def __init__(self, id, name, type, phase, frozen, durationSeconds, startTimeSeconds, relativeTimeSeconds):
@@ -57,11 +57,10 @@ class Contest():
     
     @property
     def embed(self):
-        # TODO: make gradient
         embed = discord.Embed(
             title=self.name,
             url=f'https://codeforces.com/contests/{self.id}',
-            color=discord.Color.red() if self.is_close() else 0x576fa6
+            color=rg_linear_gradient(0, 3 * 24 * 60 * 60, min(3 * 24 * 60 * 60, -self.__relative_time_seconds))
         )
         embed.add_field(name='Մինչև մեկնարկը', value=self.before_start)
         embed.add_field(name='Մեկնարկը', value=self.start_date_time)
@@ -82,7 +81,7 @@ class CodeForces():
             Contest(**contest)
             for contest in json.loads(response.content)['result']
             if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -24 * 7 * 60 * 60
-        ], key=lambda x: x.start_time_seconds)
+        ], key=lambda x: -x.start_time_seconds)
 
         return upcoming
     

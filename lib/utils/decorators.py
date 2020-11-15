@@ -3,7 +3,7 @@ import time
 def duration_str(func):
     def modifier(*args, **kwargs):
         durationSec = func(*args, **kwargs)
-        return '%02dժ %02dր %02dվ' % (durationSec // 3600, (durationSec % 3600) // 60, (durationSec % 60)) 
+        return '%02dժ %02dր' % (durationSec // 3600, (durationSec % 3600) // 60) 
     return modifier
 
 def date_time(func):

@@ -7,9 +7,6 @@ import discord
 from discord.ext import tasks
 
 from lib.codeforces import codeforces
-from lib.utils.message_painter import painter
-
-
 
 class Reminder(discord.Client):
 
@@ -24,7 +21,6 @@ class Reminder(discord.Client):
         if any([contest.is_close() for contest in contests]):
             await channel.send('<@&777265466808074251>')
             close_contests = [contest for contest in contests if contest.is_close()]
-            # TODO: try to make 1 message
             for contest in close_contests:
                 await channel.send(embed=contest.embed)
 

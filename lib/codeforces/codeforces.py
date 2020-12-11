@@ -50,11 +50,12 @@ class Contest():
         return self.__type
 
     def __repr__(self):
-        return f'Contest(id={self.__id}, name={self.__name}, type={self.__type}, phase={self.__phase}, frozen={self.__frozen}, duration_seconds={self.__duration_seconds}, start_time_seconds={self.__start_time_seconds}, relative_time_seconds={self.__relative_time_seconds})'
+        return f'Contest(id={self.__id}, name="{self.__name}", type="{self.__type}", phase="{self.__phase}", frozen={self.__frozen}, durationSeconds={self.__duration_seconds}, startTimeSeconds={self.__start_time_seconds}, relativeTimeSeconds={self.__relative_time_seconds})'
 
     def is_close(self):
-        return -30 * 60 <= self.__relative_time_seconds < -25 * 60
-    
+        return True
+        # return -30 * 60 <= self.__relative_time_seconds < -25 * 60
+
     @property
     def embed(self):
         embed = discord.Embed(
@@ -72,11 +73,8 @@ class CodeForces():
     @staticmethod
     def get_upcoming():
         url = 'https://codeforces.com/api/contest.list'
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-        except Exception as err:
-            raise err
+        response = requests.get(url)
+        response.raise_for_status()
         upcoming = sorted([
             Contest(**contest)
             for contest in json.loads(response.content)['result']

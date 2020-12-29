@@ -56,7 +56,6 @@ class Contest():
         return f'Contest(id={self.__id}, name="{self.__name}", type="{self.__type}", phase="{self.__phase}", frozen={self.__frozen}, durationSeconds={self.__duration_seconds}, startTimeSeconds={self.__start_time_seconds}, relativeTimeSeconds={self.__relative_time_seconds})'
 
     def is_close(self):
-        return True
         return -3.01 * remind_interval <= self.__relative_time_seconds / 60 < -1.99 * remind_interval
 
     @property

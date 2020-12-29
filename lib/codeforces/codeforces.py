@@ -5,6 +5,9 @@ import json
 
 from lib.utils.decorators import duration_str, date_time, hy_month
 from lib.utils.color_generators import rg_linear_gradient
+from lib.utils.constants import REMIND_CHECK_INTERVALS_M
+
+remind_interval = REMIND_CHECK_INTERVALS_M['codeforces']
 
 class Contest():
     def __init__(self, id, name, type, phase, frozen, durationSeconds, startTimeSeconds, relativeTimeSeconds):
@@ -54,7 +57,7 @@ class Contest():
 
     def is_close(self):
         return True
-        # return -30 * 60 <= self.__relative_time_seconds < -25 * 60
+        return -3.01 * remind_interval <= self.__relative_time_seconds / 60 < -1.99 * remind_interval
 
     @property
     def embed(self):
@@ -86,7 +89,7 @@ class CodeForces():
     @staticmethod
     def message_from_contest_list(contests):
         embed = discord.Embed(
-            title='CodeForces Contests',
+            title='Քոդֆորսիսի մրցույթներ',
             url='https://codeforces.com/contests',
             color=0x576fa6,
         )

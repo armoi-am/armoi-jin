@@ -1,4 +1,8 @@
 import time
+import os
+
+os.environ['TZ'] = 'Asia/Yerevan'
+time.tzset()
 
 def duration_str(func):
     def modifier(*args, **kwargs):

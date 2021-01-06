@@ -41,11 +41,8 @@ async def get_role(guild, role_name):
         return discord.utils.get(guild.roles, name=role_name)
 
 
-def is_guild_owner(ctx):
-    return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
-
 @reminder.command()
-@commands.check_any(commands.is_owner(), commands.check(is_guild_owner))
+@commands.has_permissions(administrator=True)
 async def հիշացրու(ctx):
     if ctx.channel not in reminder.channels_to_remind:
         await get_role(ctx.guild, ROLE_NAMES['codeforces'])
@@ -57,7 +54,7 @@ async def հիշացրու(ctx):
     await reply_approved(ctx)
 
 @reminder.command()
-@commands.check_any(commands.is_owner(), commands.check(is_guild_owner))
+@commands.has_permissions(administrator=True)
 async def միՀիշացրու(ctx):
     if ctx.channel in reminder.channels_to_remind:
         reminder.channels_to_remind.remove(ctx.channel)
@@ -91,7 +88,7 @@ async def անջատվի(ctx):
         await ctx.send('Անջատվեցի։')
 
 @reminder.command()
-@commands.check(lambda ctx: ctx.channel == ADMIN_HUB_ID)
+@commands.check(lambda ctx: ctx.channel.id == ADMIN_HUB_ID)
 async def միացի(ctx):
     check_codeforces.start()
     if ctx is not None:
@@ -99,7 +96,7 @@ async def միացի(ctx):
 
 
 @reminder.command()
-@commands.check(lambda ctx: ctx.channel == ADMIN_HUB_ID)
+@commands.check(lambda ctx: ctx.channel.id == ADMIN_HUB_ID)
 async def ռեստարտ(ctx):
     await reply_approved(ctx)
     await անջատվի(ctx)
@@ -123,7 +120,7 @@ async def warn_admin_hub(ctx, error):
 @ինձՆշի.error
 @ինձՄիՆշի.error
 async def էռոր(ctx, error):
-    if isinstance(error, commands.errors.CheckAnyFailure):
+    if isinstance(error, commands.errors.MissingPermissions):
         await reply_rejected(ctx)
     else:
         await ctx.send('Չի ստացվում <:confused:793616226352889856> :')

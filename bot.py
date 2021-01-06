@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 TOKEN = os.getenv('TOKEN')
+DATABASE_URL=os.getenv('DATABASE_URL')
+DATABASE_ROW = 'testing_channels' if os.getenv('MODE') == 'TESTING' else 'channels'
 import json
 import time
 import random
@@ -17,6 +19,12 @@ from lib.utils.constants import ROLE_NAMES, \
                                 ADMIN_HUB_ID
 
 import asyncio
+
+import psycopg2
+
+db_conn = psycopg2.connect(DATABASE_URL)
+
+db_cur = db_conn.cursor()
 
 
 reminder = commands.Bot(command_prefix='ջին ', cast_insensitive=True)
@@ -47,9 +55,8 @@ async def հիշացրու(ctx):
     if ctx.channel not in reminder.channels_to_remind:
         await get_role(ctx.guild, ROLE_NAMES['codeforces'])
         reminder.channels_to_remind.add(ctx.channel)
-
-        with open('./data/channels.json', 'w') as f:
-            json.dump([channel.id for channel in reminder.channels_to_remind], f)
+        db_cur.execute(f'INSERT INTO {DATABASE_ROW} (channel_id) VALUES(%s)', (ctx.channel.id, ))
+        db_conn.commit()
 
     await reply_approved(ctx)
 
@@ -58,8 +65,8 @@ async def հիշացրու(ctx):
 async def միՀիշացրու(ctx):
     if ctx.channel in reminder.channels_to_remind:
         reminder.channels_to_remind.remove(ctx.channel)
-        with open('./data/channels.json', 'w') as f:
-            json.dump([channel.id for channel in reminder.channels_to_remind], f)
+        db_cur.execute(f'DELETE FROM {DATABASE_ROW} WHERE channel_id = %s', (ctx.channel.id, ))
+        db_conn.commit()
 
     await reply_approved(ctx)
 
@@ -129,8 +136,8 @@ async def էռոր(ctx, error):
 @reminder.event
 async def on_ready():
     reminder.channels_to_remind = set()
-    with open('./data/channels.json', 'r') as f:
-        reminder.channels_to_remind = set([reminder.get_channel(id) for id in json.load(f)])
+    db_cur.execute(f'SELECT * FROM {DATABASE_ROW};')
+    reminder.channels_to_remind = set([reminder.get_channel(id[0]) for id in db_cur.fetchall()])
     for channel in reminder.channels_to_remind:
         await channel.send('Ես կապի մեջ եմ։')
 

@@ -30,7 +30,6 @@ db_cur = db_conn.cursor()
 reminder = commands.Bot(command_prefix='ջին ', cast_insensitive=True)
 
 async def reply_approved(ctx: commands.Context):
-    # TODO: figure out what's wrong and fix
     emoji = random.choice([
         '👍',
         '👌',
@@ -50,7 +49,6 @@ async def reply_rejected(ctx):
     await ctx.send(random.choice(REQUEST_REJECTED_MESSAGES).format(ctx.message.author.mention))
 
 async def get_role(guild, role_name):
-    await ctx.message.add_reaction(emoji)
     if role_name not in [role.name for role in guild.roles]:
         return await guild.create_role(name=role_name, color=discord.Colour.dark_magenta())
     else:

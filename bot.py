@@ -29,20 +29,28 @@ db_cur = db_conn.cursor()
 
 reminder = commands.Bot(command_prefix='ջին ', cast_insensitive=True)
 
-async def reply_approved(ctx):
+async def reply_approved(ctx: commands.Context):
     # TODO: figure out what's wrong and fix
-    # await ctx.message.add_reaction(random.choice([
-    #     '<:v:793622547618070538>',
-    #     '<:ok:793622578853052486>',
-    #     '<:ok_hand:793622605557923850>',
-    #     '<:+1:793622783040946216>'
-    # ]))
+    emoji = random.choice([
+        '👍',
+        '👌',
+        '✌️'
+    ])
+    await ctx.message.add_reaction(emoji)
     await ctx.send(random.choice(REQUEST_APPROVED_MESSAGES).format(ctx.message.author.mention))
 
 async def reply_rejected(ctx):
+    emoji = random.choice([
+        '😠',
+        '💢',
+        '😠',
+        '😾'
+    ])
+    await ctx.message.add_reaction(emoji)
     await ctx.send(random.choice(REQUEST_REJECTED_MESSAGES).format(ctx.message.author.mention))
 
 async def get_role(guild, role_name):
+    await ctx.message.add_reaction(emoji)
     if role_name not in [role.name for role in guild.roles]:
         return await guild.create_role(name=role_name, color=discord.Colour.dark_magenta())
     else:
@@ -138,8 +146,6 @@ async def on_ready():
     reminder.channels_to_remind = set()
     db_cur.execute(f'SELECT * FROM {DATABASE_ROW};')
     reminder.channels_to_remind = set([reminder.get_channel(id[0]) for id in db_cur.fetchall()])
-    for channel in reminder.channels_to_remind:
-        await channel.send('Ես կապի մեջ եմ։')
 
     print('Logged on as', reminder.user)
     check_codeforces.start()

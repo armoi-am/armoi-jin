@@ -3,7 +3,7 @@ ROLE_NAMES = {
 }
 
 REMIND_CHECK_INTERVALS_M = {
-    'codeforces': 15
+    'codeforces': 7
 }
 
 REQUEST_APPROVED_MESSAGES = [

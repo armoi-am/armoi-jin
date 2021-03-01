@@ -27,7 +27,7 @@ db_conn = psycopg2.connect(DATABASE_URL)
 db_cur = db_conn.cursor()
 
 
-reminder = commands.Bot(command_prefix='ջին ', cast_insensitive=True)
+reminder = commands.Bot(command_prefix='ջին ')
 
 async def reply_approved(ctx: commands.Context):
     emoji = random.choice([
@@ -89,9 +89,12 @@ async def ինձՄիՆշի(ctx):
     await reply_approved(ctx)
 
 @reminder.command()
-async def քոդֆորսիս(channel):
-    for contest in CodeForces.get_upcoming():
-        await channel.send(embed=contest.embed)
+async def քոդֆորսիս(ctx, arg=''):
+    if arg == 'լրիվ':
+        await ctx.send(embed=CodeForces.message_from_contest_list(CodeForces.get_upcoming()))
+    else:
+        for contest in CodeForces.get_upcoming():
+            await ctx.send(embed=contest.embed)
 
 @reminder.command()
 @commands.check(lambda ctx: ctx.channel.id == ADMIN_HUB_ID)
@@ -154,7 +157,11 @@ async def check_codeforces():
     try:
         contests = CodeForces.get_upcoming()
 
-        close_contests = [contest for contest in contests if contest.is_close()]
+        close_contests = [
+            contest
+            for contest in contests
+            if contest.is_close() or contest.will_be_close_in_a_day()
+        ]
         if len(close_contests):
             for channel in reminder.channels_to_remind:
                 role = await get_role(channel.guild, ROLE_NAMES['codeforces'])

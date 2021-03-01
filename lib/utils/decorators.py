@@ -7,7 +7,7 @@ time.tzset()
 def duration_str(func):
     def modifier(*args, **kwargs):
         durationSec = func(*args, **kwargs)
-        return '%02dժ %02dր' % (durationSec // 3600, (durationSec % 3600) // 60) 
+        return '%dժ %02dր' % (durationSec // 3600, (durationSec % 3600) // 60) 
     return modifier
 
 def date_time(func):

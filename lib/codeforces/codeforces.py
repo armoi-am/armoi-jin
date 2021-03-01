@@ -56,7 +56,10 @@ class Contest():
         return f'Contest(id={self.__id}, name="{self.__name}", type="{self.__type}", phase="{self.__phase}", frozen={self.__frozen}, durationSeconds={self.__duration_seconds}, startTimeSeconds={self.__start_time_seconds}, relativeTimeSeconds={self.__relative_time_seconds})'
 
     def is_close(self):
-        return -3.01 * remind_interval <= self.__relative_time_seconds / 60 < -1.99 * remind_interval
+        return -4.05 * remind_interval <= self.__relative_time_seconds / 60 <= -0.95 * remind_interval
+
+    def will_be_close_in_a_day(self):
+        return -1.05 * remind_interval <= self.__relative_time_seconds / 60 + 24 * 60 <= -0.95 * remind_interval
 
     @property
     def embed(self):
@@ -80,7 +83,7 @@ class CodeForces():
         upcoming = sorted([
             Contest(**contest)
             for contest in json.loads(response.content)['result']
-            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -24 * 7 * 60 * 60
+            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -7 * 24 * 60 * 60
         ], key=lambda x: -x.start_time_seconds)
 
         return upcoming
@@ -93,7 +96,7 @@ class CodeForces():
             color=0x576fa6,
         )
         for contest in contests:
-            embed.add_field(name=contest.name, value=str(contest))
+            embed.add_field(name=contest.name, value=f'Մինչև մեկնարկը՝ {contest.before_start}\nՄեկնարկը՝ {contest.start_date_time}\nՏևողությունը՝ {contest.duration}')
         return embed
 
 if __name__ == '__main__':

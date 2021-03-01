@@ -91,7 +91,7 @@ async def ինձՄիՆշի(ctx):
 @reminder.command()
 async def քոդֆորսիս(ctx, arg=''):
     if arg == 'լրիվ':
-        await ctx.send(embed=CodeForces.message_from_contest_list(CodeForces.get_upcoming()))
+        await ctx.send(embed=CodeForces.one_embed())
     else:
         for contest in CodeForces.get_upcoming():
             await ctx.send(embed=contest.embed)

@@ -76,14 +76,14 @@ class Contest():
 class CodeForces():
 
     @staticmethod
-    def get_upcoming():
+    def get_upcoming(full=False):
         url = 'https://codeforces.com/api/contest.list'
         response = requests.get(url)
         response.raise_for_status()
         upcoming = sorted([
             Contest(**contest)
             for contest in json.loads(response.content)['result']
-            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and contest['relativeTimeSeconds'] > -7 * 24 * 60 * 60
+            if contest['phase'] == 'BEFORE' and contest['relativeTimeSeconds'] < 0 and (full or contest['relativeTimeSeconds'] > -7 * 24 * 60 * 60)
         ], key=lambda x: -x.start_time_seconds)
 
         return upcoming
@@ -98,6 +98,10 @@ class CodeForces():
         for contest in contests:
             embed.add_field(name=contest.name, value=f'Մինչև մեկնարկը՝ {contest.before_start}\nՄեկնարկը՝ {contest.start_date_time}\nՏևողությունը՝ {contest.duration}')
         return embed
+    
+    @staticmethod
+    def one_embed():
+        return CodeForces.message_from_contest_list(CodeForces.get_upcoming(full=True))
 
 if __name__ == '__main__':
     print(CodeForces.get_upcoming())

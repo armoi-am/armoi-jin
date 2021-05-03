@@ -59,7 +59,7 @@ class Contest():
         return -3.05 * remind_interval <= self.__relative_time_seconds / 60 <= -0.95 * remind_interval
 
     def will_be_close_in_a_day(self):
-        return -1.05 * remind_interval <= self.__relative_time_seconds / 60 + 24 * 60 <= -0.95 * remind_interval
+        return -0.5 * remind_interval <= self.__relative_time_seconds / 60 + 24 * 60 <= 0.5 * remind_interval
 
     @property
     def embed(self):
